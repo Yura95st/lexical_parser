@@ -40,7 +40,7 @@ public class Main
 
 			for (Lexeme lexeme : lexemes)
 			{
-				System.out.println(String.format("%1$s", lexeme.getValue()));
+				System.out.println(String.format("%1$s (%2$s)", lexeme.getValue(), lexeme.getKind().name()));
 			}
 		}
 		catch (Exception exception)
