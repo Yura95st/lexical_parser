@@ -1,23 +1,23 @@
-package lexical_parser.LexemeDefinitions;
+package lexical_parser.TokenDefinitions;
 
 import java.util.regex.Pattern;
 
-import lexical_parser.Enums.LexemeKind;
+import lexical_parser.Enums.TokenKind;
 
-public class DynamicLexemeDefinition implements ILexemeDefinition<Pattern>
+public class DynamicTokenDefinition implements ITokenDefinition<Pattern>
 {
-	private LexemeKind kind;
+	private TokenKind kind;
 	
 	private Pattern representation;
 	
-	public DynamicLexemeDefinition(String representation, LexemeKind kind)
+	public DynamicTokenDefinition(String representation, TokenKind kind)
 	{
 		this.representation = Pattern.compile(representation);
 		this.kind = kind;
 	}
 	
 	@Override
-	public LexemeKind getKind()
+	public TokenKind getKind()
 	{
 		return this.kind;
 	}

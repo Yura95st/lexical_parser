@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
-import lexical_parser.Enums.LexemeKind;
-import lexical_parser.Models.Lexeme;
+import lexical_parser.Enums.TokenKind;
+import lexical_parser.Models.Token;
 import lexical_parser.Models.Location;
 
 import org.junit.Assert;
@@ -18,7 +18,7 @@ public class LexerTests
 	private ILexer lexer;
 	
 	@Test
-	public void getLexemes_IntegerLiterals()
+	public void getTokens_IntegerLiterals()
 	{
 		String[] intNumbers = new String[] {
 			"0", "01234", "1234", "1234U", "1234u", "1234L", "1234l", "1234ul",
@@ -33,119 +33,119 @@ public class LexerTests
 			this.lexer.setSource(number);
 			this.lexer.parse();
 
-			Lexeme expectedLexeme = new Lexeme(number,
-				LexemeKind.IntegerLiteral, new Location(0, number.length()));
+			Token expectedToken = new Token(number,
+				TokenKind.IntegerLiteral, new Location(0, number.length()));
 
-			List<Lexeme> lexemes = this.lexer.getLexemes();
+			List<Token> tokens = this.lexer.getTokens();
 
-			Assert.assertEquals(1, lexemes.size());
+			Assert.assertEquals(1, tokens.size());
 
-			Assert.assertEquals(expectedLexeme, lexemes.get(0));
+			Assert.assertEquals(expectedToken, tokens.get(0));
 		}
 	}
 
 	@Test
-	public void getLexemes_InvalidIntegerLiterals_DividesValueIntoLexemes()
+	public void getTokens_InvalidIntegerLiterals_DividesValueIntoTokens()
 		throws Exception
 	{
-		HashMap<String, List<Lexeme>> hashMap = new HashMap<String, List<Lexeme>>()
+		HashMap<String, List<Token>> hashMap = new HashMap<String, List<Token>>()
 		{
 			{
-				this.put("0x", new ArrayList<Lexeme>()
+				this.put("0x", new ArrayList<Token>()
 				{
 					{
-						this.add(new Lexeme("0", LexemeKind.IntegerLiteral,
+						this.add(new Token("0", TokenKind.IntegerLiteral,
 							new Location(0, 1)));
-						this.add(new Lexeme("x", LexemeKind.Identifier,
+						this.add(new Token("x", TokenKind.Identifier,
 							new Location(1, 1)));
 					}
 				});
-				this.put("x123", new ArrayList<Lexeme>()
+				this.put("x123", new ArrayList<Token>()
 				{
 					{
-						this.add(new Lexeme("x123", LexemeKind.Identifier,
+						this.add(new Token("x123", TokenKind.Identifier,
 							new Location(0, 4)));
 					}
 				});
-				this.put("123uu", new ArrayList<Lexeme>()
+				this.put("123uu", new ArrayList<Token>()
 				{
 					{
-						this.add(new Lexeme("123u", LexemeKind.IntegerLiteral,
+						this.add(new Token("123u", TokenKind.IntegerLiteral,
 							new Location(0, 4)));
-						this.add(new Lexeme("u", LexemeKind.Identifier,
+						this.add(new Token("u", TokenKind.Identifier,
 							new Location(4, 1)));
 					}
 				});
 			}
 		};
 
-		for (Entry<String, List<Lexeme>> entry : hashMap.entrySet())
+		for (Entry<String, List<Token>> entry : hashMap.entrySet())
 		{
 			this.lexer.setSource(entry.getKey());
 			this.lexer.parse();
 
-			List<Lexeme> expectedLexemes = entry.getValue();
+			List<Token> expectedTokens = entry.getValue();
 
-			List<Lexeme> lexemes = this.lexer.getLexemes();
+			List<Token> tokens = this.lexer.getTokens();
 			
-			Assert.assertEquals(entry.getValue(), lexemes);
+			Assert.assertEquals(entry.getValue(), tokens);
 		}
 	}
 
 	@Test
-	public void getLexemes_InvalidRealLiterals_DividesValueIntoLexemes()
+	public void getTokens_InvalidRealLiterals_DividesValueIntoTokens()
 		throws Exception
 	{
-		HashMap<String, List<Lexeme>> hashMap = new HashMap<String, List<Lexeme>>()
+		HashMap<String, List<Token>> hashMap = new HashMap<String, List<Token>>()
 		{
 			{
-				this.put("123.45.67", new ArrayList<Lexeme>()
+				this.put("123.45.67", new ArrayList<Token>()
 				{
 					{
-						this.add(new Lexeme("123.45", LexemeKind.RealLiteral,
+						this.add(new Token("123.45", TokenKind.RealLiteral,
 							new Location(0, 6)));
-						this.add(new Lexeme(".67", LexemeKind.RealLiteral,
+						this.add(new Token(".67", TokenKind.RealLiteral,
 							new Location(6, 3)));
 					}
 				});
-				this.put("123e", new ArrayList<Lexeme>()
+				this.put("123e", new ArrayList<Token>()
 				{
 					{
-						this.add(new Lexeme("123", LexemeKind.IntegerLiteral,
+						this.add(new Token("123", TokenKind.IntegerLiteral,
 							new Location(0, 3)));
-						this.add(new Lexeme("e", LexemeKind.Identifier,
+						this.add(new Token("e", TokenKind.Identifier,
 							new Location(3, 1)));
 					}
 				});
-				this.put(".e+123", new ArrayList<Lexeme>()
+				this.put(".e+123", new ArrayList<Token>()
 				{
 					{
-						this.add(new Lexeme(".", LexemeKind.Unknown,
+						this.add(new Token(".", TokenKind.Unknown,
 							new Location(0, 1)));
-						this.add(new Lexeme("e", LexemeKind.Identifier,
+						this.add(new Token("e", TokenKind.Identifier,
 							new Location(1, 1)));
-						this.add(new Lexeme("+", LexemeKind.Unknown,
+						this.add(new Token("+", TokenKind.Unknown,
 							new Location(2, 1)));
-						this.add(new Lexeme("123", LexemeKind.IntegerLiteral,
+						this.add(new Token("123", TokenKind.IntegerLiteral,
 							new Location(3, 3)));
 					}
 				});
 			}
 		};
 
-		for (Entry<String, List<Lexeme>> entry : hashMap.entrySet())
+		for (Entry<String, List<Token>> entry : hashMap.entrySet())
 		{
 			this.lexer.setSource(entry.getKey());
 			this.lexer.parse();
 
-			List<Lexeme> lexemes = this.lexer.getLexemes();
+			List<Token> tokens = this.lexer.getTokens();
 
-			Assert.assertEquals(entry.getValue(), lexemes);
+			Assert.assertEquals(entry.getValue(), tokens);
 		}
 	}
 
 	@Test
-	public void getLexemes_RealLiterals()
+	public void getTokens_RealLiterals()
 	{
 		String[] realNumbers = new String[] {
 			".0", "0.123", "0123.0123", ".0123e0123", ".0123E0123",
@@ -159,21 +159,21 @@ public class LexerTests
 			this.lexer.setSource(number);
 			this.lexer.parse();
 
-			Lexeme expectedLexeme = new Lexeme(number, LexemeKind.RealLiteral,
+			Token expectedToken = new Token(number, TokenKind.RealLiteral,
 				new Location(0, number.length()));
 
-			List<Lexeme> lexemes = this.lexer.getLexemes();
+			List<Token> tokens = this.lexer.getTokens();
 
-			Assert.assertEquals(1, lexemes.size());
+			Assert.assertEquals(1, tokens.size());
 
-			Assert.assertEquals(expectedLexeme, lexemes.get(0));
+			Assert.assertEquals(expectedToken, tokens.get(0));
 		}
 	}
 
 	@Test
-	public void getLexemes_SourceIsNullOrNotParsed_ReturnsEmptyList()
+	public void getTokens_SourceIsNullOrNotParsed_ReturnsEmptyList()
 	{
-		Assert.assertTrue(this.lexer.getLexemes().iterator().hasNext());
+		Assert.assertTrue(this.lexer.getTokens().iterator().hasNext());
 	}
 	
 	@Test(expected = IllegalArgumentException.class)

@@ -1,16 +1,16 @@
 package lexical_parser.Models;
 
-import lexical_parser.Enums.LexemeKind;
+import lexical_parser.Enums.TokenKind;
 
-public class Lexeme
+public class Token
 {
-	private LexemeKind kind;
+	private TokenKind kind;
 	
 	private Location location;
 	
 	private String value;
 	
-	public Lexeme(String value, LexemeKind kind, Location location)
+	public Token(String value, TokenKind kind, Location location)
 	{
 		this.value = value;
 		this.kind = kind;
@@ -32,7 +32,7 @@ public class Lexeme
 		{
 			return false;
 		}
-		Lexeme other = (Lexeme) obj;
+		Token other = (Token) obj;
 		if (this.kind != other.kind)
 		{
 			return false;
@@ -68,7 +68,7 @@ public class Lexeme
 	 *
 	 * @return the kind
 	 */
-	public LexemeKind getKind()
+	public TokenKind getKind()
 	{
 		return this.kind;
 	}

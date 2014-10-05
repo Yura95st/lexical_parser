@@ -1,15 +1,15 @@
-package lexical_parser.LexemeDefinitions;
+package lexical_parser.TokenDefinitions;
 
-import lexical_parser.Enums.LexemeKind;
+import lexical_parser.Enums.TokenKind;
 
-public interface ILexemeDefinition<T>
+public interface ITokenDefinition<T>
 {
 	/**
 	 * Gets the kind.
 	 *
 	 * @return the kind
 	 */
-	public LexemeKind getKind();
+	public TokenKind getKind();
 	
 	/**
 	 * Gets the representation.

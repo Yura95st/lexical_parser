@@ -7,7 +7,7 @@ import java.nio.file.Paths;
 import java.util.List;
 
 import lexical_parser.Helpers.ExceptionHelper;
-import lexical_parser.Models.Lexeme;
+import lexical_parser.Models.Token;
 
 public class Main
 {
@@ -36,11 +36,11 @@ public class Main
 			
 			lexer.parse();
 			
-			Iterable<Lexeme> lexemes = lexer.getLexemes();
+			Iterable<Token> tokens = lexer.getTokens();
 
-			for (Lexeme lexeme : lexemes)
+			for (Token token : tokens)
 			{
-				System.out.println(String.format("%1$s (%2$s)", lexeme.getValue(), lexeme.getKind().name()));
+				System.out.println(String.format("%1$s (%2$s)", token.getValue(), token.getKind().name()));
 			}
 		}
 		catch (Exception exception)

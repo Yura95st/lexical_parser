@@ -2,16 +2,16 @@ package lexical_parser;
 
 import java.util.List;
 
-import lexical_parser.Models.Lexeme;
+import lexical_parser.Models.Token;
 
 public interface ILexer
 {
 	/**
-	 * Gets the lexemes.
+	 * Gets the tokens.
 	 *
-	 * @return the lexemes
+	 * @return the tokens
 	 */
-	List<Lexeme> getLexemes();
+	List<Token> getTokens();
 
 	/**
 	 * Parses the source.

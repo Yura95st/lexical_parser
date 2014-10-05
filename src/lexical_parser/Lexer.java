@@ -4,16 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 
-import lexical_parser.Enums.LexemeKind;
-import lexical_parser.Helpers.LexemeDefinitionHelper;
-import lexical_parser.LexemeDefinitions.DynamicLexemeDefinition;
-import lexical_parser.LexemeDefinitions.StaticLexemeDefinition;
-import lexical_parser.Models.Lexeme;
+import lexical_parser.Enums.TokenKind;
+import lexical_parser.Helpers.TokenDefinitionHelper;
+import lexical_parser.Models.Token;
 import lexical_parser.Models.Location;
+import lexical_parser.TokenDefinitions.DynamicTokenDefinition;
+import lexical_parser.TokenDefinitions.StaticTokenDefinition;
 
 public class Lexer implements ILexer
 {
-	private List<Lexeme> lexemes;
+	private List<Token> tokens;
 
 	private int offset;
 
@@ -31,15 +31,15 @@ public class Lexer implements ILexer
 
 	public Lexer()
 	{
-		this.lexemes = new ArrayList<Lexeme>();
+		this.tokens = new ArrayList<Token>();
 		this.offset = 0;
 		this.source = "";
 	}
 
 	@Override
-	public List<Lexeme> getLexemes()
+	public List<Token> getTokens()
 	{
-		return this.lexemes;
+		return this.tokens;
 	}
 
 	private boolean inBounds()
@@ -50,7 +50,7 @@ public class Lexer implements ILexer
 	@Override
 	public void parse()
 	{
-		this.lexemes.clear();
+		this.tokens.clear();
 		
 		while (this.inBounds())
 		{
@@ -61,27 +61,27 @@ public class Lexer implements ILexer
 				break;
 			}
 			
-			Lexeme lexeme = this.processStatic();
+			Token token = this.processStatic();
 
-			if (lexeme == null)
+			if (token == null)
 			{
-				lexeme = this.processDynamic();
+				token = this.processDynamic();
 			}
 
-			if (lexeme == null)
+			if (token == null)
 			{
-				lexeme = new Lexeme(this.source.substring(this.offset, this.offset+1), LexemeKind.Unknown, new Location(this.offset, 1));
+				token = new Token(this.source.substring(this.offset, this.offset+1), TokenKind.Unknown, new Location(this.offset, 1));
 				
 				this.offset++;
 			}
 			
-			this.lexemes.add(lexeme);
+			this.tokens.add(token);
 		}
 	}
 
-	private Lexeme processDynamic()
+	private Token processDynamic()
 	{
-		for (DynamicLexemeDefinition definition : LexemeDefinitionHelper.DynamicLexemeDefinitionsList)
+		for (DynamicTokenDefinition definition : TokenDefinitionHelper.DynamicTokenDefinitionsList)
 		{
 			String matchString = this.source.substring(this.offset,
 				this.source.length());
@@ -96,23 +96,23 @@ public class Lexer implements ILexer
 
 			Location location = new Location(this.offset, matcher.end());
 			
-			String lexemeValue = matchString.substring(0, location.getLength());
-//			String lexemeValue = matcher.group(0);
+			String tokenValue = matchString.substring(0, location.getLength());
+//			String tokenValue = matcher.group(0);
 
-			Lexeme lexeme = new Lexeme(lexemeValue, definition.getKind(),
+			Token token = new Token(tokenValue, definition.getKind(),
 				location);
 
 			this.offset += matcher.end();
 
-			return lexeme;
+			return token;
 		}
 		
 		return null;
 	}
 
-	private Lexeme processStatic()
+	private Token processStatic()
 	{
-		for (StaticLexemeDefinition definition : LexemeDefinitionHelper.StaticLexemeDefinitionsList)
+		for (StaticTokenDefinition definition : TokenDefinitionHelper.StaticTokenDefinitionsList)
 		{
 			String representation = definition.getRepresentation();
 			
@@ -125,29 +125,29 @@ public class Lexer implements ILexer
 				continue;
 			}
 			
-//			if (this.offset + length < this.source.length()
-//				&& definition.getKind().equals(LexemeKind.Keyword))
-//			{
-//				char nextChar = this.source.charAt(this.offset + length);
-//
-//				if (nextChar == '_' || Character.isDigit(nextChar)
-//					|| Character.isLetter(nextChar))
-//				{
-//					continue;
-//				}
-//			}
+			if (this.offset + length < this.source.length()
+				&& definition.getKind().equals(TokenKind.Keyword))
+			{
+				char nextChar = this.source.charAt(this.offset + length);
+
+				if (nextChar == '_' || Character.isDigit(nextChar)
+					|| Character.isLetter(nextChar))
+				{
+					continue;
+				}
+			}
 
 			Location location = new Location(this.offset, length);
 
-			String lexemeValue = this.source.substring(location.getOffset(),
+			String tokenValue = this.source.substring(location.getOffset(),
 				location.getOffset() + location.getLength());
 
-			Lexeme lexeme = new Lexeme(lexemeValue, definition.getKind(),
+			Token token = new Token(tokenValue, definition.getKind(),
 				location);
 
 			this.offset += length;
 
-			return lexeme;
+			return token;
 		}
 		
 		return null;
@@ -158,7 +158,7 @@ public class Lexer implements ILexer
 	{
 		this.source = source;
 		
-		this.lexemes.clear();
+		this.tokens.clear();
 		
 		this.offset = 0;
 	}
