@@ -1,5 +1,7 @@
 package lexical_parser;
 
+import java.util.List;
+
 import lexical_parser.Models.Lexeme;
 
 public interface ILexer
@@ -9,16 +11,13 @@ public interface ILexer
 	 *
 	 * @return the lexemes
 	 */
-	Iterable<Lexeme> getLexemes();
-	
+	List<Lexeme> getLexemes();
+
 	/**
 	 * Parses the source.
-	 *
-	 * @throws Exception
-	 *             the exception
 	 */
-	void parse() throws Exception;
-	
+	void parse();
+
 	/**
 	 * Sets the source.
 	 *
