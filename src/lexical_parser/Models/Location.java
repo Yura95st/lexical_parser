@@ -1,5 +1,7 @@
 package lexical_parser.Models;
 
+import lexical_parser.Helpers.Guard;
+
 public class Location
 {
 	private int length;
@@ -8,17 +10,8 @@ public class Location
 	
 	public Location(int offset, int length)
 	{
-		if (offset < 0)
-		{
-			throw new IllegalArgumentException(
-				"Offset value must be not less, than zero.");
-		}
-		
-		if (length < 0)
-		{
-			throw new IllegalArgumentException(
-				"Length value must be not less, than zero.");
-		}
+		Guard.isMoreOrEqualToZero(offset, "offset");
+		Guard.isMoreOrEqualToZero(length, "length");
 		
 		this.offset = offset;
 		this.length = length;

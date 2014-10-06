@@ -7,6 +7,13 @@ import lexical_parser.Models.Token;
 public interface ILexer
 {
 	/**
+	 * Gets the keywords.
+	 *
+	 * @return the keywords
+	 */
+	Iterable<String> getKeywords();
+
+	/**
 	 * Gets the tokens.
 	 *
 	 * @return the tokens
@@ -17,7 +24,15 @@ public interface ILexer
 	 * Parses the source.
 	 */
 	void parse();
-
+	
+	/**
+	 * Sets the keywords.
+	 *
+	 * @param keywords
+	 *            the new keywords
+	 */
+	void setKeywords(String[] keywords);
+	
 	/**
 	 * Sets the source.
 	 *

@@ -1,6 +1,7 @@
 package lexical_parser.Models;
 
 import lexical_parser.Enums.TokenKind;
+import lexical_parser.Helpers.Guard;
 
 public class Token
 {
@@ -12,6 +13,10 @@ public class Token
 	
 	public Token(String value, TokenKind kind, Location location)
 	{
+		Guard.isNotNull(value, "value");
+		Guard.isNotNull(kind, "kind");
+		Guard.isNotNull(location, "location");
+		
 		this.value = value;
 		this.kind = kind;
 		this.location = location;

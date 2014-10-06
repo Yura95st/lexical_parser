@@ -2,10 +2,14 @@ package lexical_parser;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import lexical_parser.Enums.TokenKind;
+import lexical_parser.Helpers.TokenDefinitionHelper;
 import lexical_parser.Models.Token;
 import lexical_parser.Models.Location;
 
@@ -173,7 +177,80 @@ public class LexerTests
 	@Test
 	public void getTokens_SourceIsNullOrNotParsed_ReturnsEmptyList()
 	{
-		Assert.assertTrue(this.lexer.getTokens().iterator().hasNext());
+		Assert.assertEquals(0, this.lexer.getTokens().size());
+	}
+	
+	@Test
+	public void getTokens_Identifiers()
+	{
+		String[] identifiers = new String[] {
+			"identifier1", "_identifier2", "identifier_3", "@if"
+		};
+
+		for (String identifier : identifiers)
+		{
+			this.lexer.setSource(identifier);
+			this.lexer.parse();
+
+			Token expectedToken = new Token(identifier,
+				TokenKind.Identifier, new Location(0, identifier.length()));
+
+			List<Token> tokens = this.lexer.getTokens();
+
+			Assert.assertEquals(1, tokens.size());
+
+			Assert.assertEquals(expectedToken, tokens.get(0));
+		}
+	}
+	
+	@Test
+	public void getTokens_InvalidIdentifiers_DividesValueIntoTokens()
+		throws Exception
+	{
+		HashMap<String, List<Token>> hashMap = new HashMap<String, List<Token>>()
+		{
+			{
+				this.put("@identifier", new ArrayList<Token>()
+				{
+					{
+						this.add(new Token("@", TokenKind.Unknown,
+							new Location(0, 1)));
+						this.add(new Token("identifier", TokenKind.Identifier,
+							new Location(1, 10)));
+					}
+				});
+				this.put("0123identifier", new ArrayList<Token>()
+					{
+						{
+							this.add(new Token("0123", TokenKind.IntegerLiteral,
+								new Location(0, 4)));
+							this.add(new Token("identifier", TokenKind.Identifier,
+								new Location(4, 10)));
+						}
+					});
+				this.put("identi-fier", new ArrayList<Token>()
+					{
+						{
+							this.add(new Token("identi", TokenKind.Identifier,
+								new Location(0, 6)));
+							this.add(new Token("-", TokenKind.Unknown,
+								new Location(6, 1)));
+							this.add(new Token("fier", TokenKind.Identifier,
+								new Location(7, 4)));
+						}
+					});				
+			}
+		};
+
+		for (Entry<String, List<Token>> entry : hashMap.entrySet())
+		{
+			this.lexer.setSource(entry.getKey());
+			this.lexer.parse();
+
+			List<Token> tokens = this.lexer.getTokens();
+
+			Assert.assertEquals(entry.getValue(), tokens);
+		}
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
@@ -186,6 +263,8 @@ public class LexerTests
 	public void setUp() throws Exception
 	{
 		this.lexer = new Lexer();
+		
+		this.lexer.setKeywords(TokenDefinitionHelper.Keywords);
 	}
 	
 	@Test
@@ -194,4 +273,70 @@ public class LexerTests
 		Assert.fail("Not yet implemented");
 	}
 	
+	@Test
+	public void getKeywords_KeywordsAreNotSet_ReturnsEmptyList()
+	{
+		this.lexer = new Lexer();
+		
+		Assert.assertFalse(this.lexer.getKeywords().iterator().hasNext());
+	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void setKeywords_KeywordsIsNull_ThrowsIllegalArgumentException()
+	{
+		this.lexer.setKeywords(null);
+	}
+	
+	@Test
+	public void setKeywords_KeywordsAreSuccessfullySet()
+	{
+		String[] expectedKeywords = new String[] {
+			"keyword1", "keyword2", "keyword3",
+		};
+		
+		this.lexer.setKeywords(expectedKeywords);
+		
+		Iterator<String> keywords = this.lexer.getKeywords().iterator();
+		
+		for(int i=0, count=expectedKeywords.length; i < count; i++)
+		{
+			String keyword = keywords.next();
+			
+			Assert.assertEquals(expectedKeywords[i], keyword);
+		}
+		
+		Assert.assertFalse(keywords.hasNext());
+	}
+	
+	@Test
+	public void setKeywords_KeywordsArrayWithDuplicates_RemoveDuplicates()
+	{
+		String[] expectedKeywords = new String[] {
+			"duplicate_keyword", "duplicate_keyword", "duplicate_keyword",
+		};
+		
+		Set<String> hashSet = new HashSet<String>();
+		
+		for(String keyword: expectedKeywords)
+		{
+			hashSet.add(keyword);
+		}
+		
+		this.lexer.setKeywords(expectedKeywords);
+		
+		Iterator<String> keywords = this.lexer.getKeywords().iterator();
+		
+		Iterator<String> iterator = hashSet.iterator();
+		
+		while(iterator.hasNext())
+		{
+			String expectedKeyword = iterator.next();
+			
+			String keyword = keywords.next();
+			
+			Assert.assertEquals(expectedKeyword, keyword);
+		}
+		
+		Assert.assertFalse(keywords.hasNext());
+	}
 }

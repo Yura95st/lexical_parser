@@ -7,6 +7,7 @@ import java.nio.file.Paths;
 import java.util.List;
 
 import lexical_parser.Helpers.ExceptionHelper;
+import lexical_parser.Helpers.TokenDefinitionHelper;
 import lexical_parser.Models.Token;
 
 public class Main
@@ -14,6 +15,8 @@ public class Main
 	public static void main(String[] args)
 	{
 		ILexer lexer = new Lexer();
+		
+		lexer.setKeywords(TokenDefinitionHelper.Keywords);
 		
 		try
 		{
