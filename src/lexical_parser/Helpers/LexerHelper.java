@@ -4,25 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lexical_parser.Enums.TokenKind;
-import lexical_parser.TokenDefinitions.DynamicTokenDefinition;
-import lexical_parser.TokenDefinitions.StaticTokenDefinition;
+import lexical_parser.Models.TokenDefinition;
 
-public class TokenDefinitionHelper
+public class LexerHelper
 {
-	public static List<DynamicTokenDefinition> DynamicTokenDefinitionsList = new ArrayList<DynamicTokenDefinition>()
-	{
-		{
-			this.add(new DynamicTokenDefinition("@?[a-zA-Z_][a-zA-Z0-9_]*",
-				TokenKind.Identifier));
-			this.add(new DynamicTokenDefinition(
-				"(([0-9]*\\.[0-9]+)([eE][-+]?[0-9]+)?(F|f|D|d|M|m)?)|([0-9]+(F|f|D|d|M|m){1})",
-				TokenKind.RealLiteral));
-			this.add(new DynamicTokenDefinition(
-				"((0[xX][0-9a-fA-F]+)|[0-9]+)(UL|Ul|uL|ul|LU|Lu|lU|lu|U|u|L|l)?",
-				TokenKind.IntegerLiteral));
-		}
-	};
-	
 	public static String[] Keywords = new String[] {
 		"abstract", "as", "base", "bool", "break", "byte", "case", "catch",
 		"char", "checked", "class", "const", "continue", "decimal", "default",
@@ -36,6 +21,23 @@ public class TokenDefinitionHelper
 		"true", "try", "typeof", "uint", "ulong", "unchecked", "unsafe",
 		"ushort", "using", "virtual", "void", "volatile", "while"
 	};
-	
-	public static List<StaticTokenDefinition> StaticTokenDefinitionsList = new ArrayList<StaticTokenDefinition>();
+
+	public static List<TokenDefinition> TokenDefinitionsList = new ArrayList<TokenDefinition>()
+	{
+		{
+			this.add(new TokenDefinition("@?[a-zA-Z_][a-zA-Z0-9_]*",
+				TokenKind.Identifier));
+			this.add(new TokenDefinition(
+				"(([0-9]*\\.[0-9]+)([eE][-+]?[0-9]+)?(F|f|D|d|M|m)?)|([0-9]+(F|f|D|d|M|m){1})",
+				TokenKind.RealLiteral));
+			this.add(new TokenDefinition(
+				"((0[xX][0-9a-fA-F]+)|[0-9]+)(UL|Ul|uL|ul|LU|Lu|lU|lu|U|u|L|l)?",
+				TokenKind.IntegerLiteral));
+			this.add(new TokenDefinition(
+				"<<=|>>=|->|\\*=|/=|%=|&=|\\|=|\\^=|\\+\\+|--|&&|\\|\\||<<|>>|==|!=|<=|>=|\\+=|-=|\\+|-|\\*|/|%|&|\\||\\^|!|~|=|<|>|\\?",
+				TokenKind.Operator));
+			this.add(new TokenDefinition("\\{|\\}|\\[|\\]|\\(|\\)|\\.|,|:|;",
+				TokenKind.Punctuator));
+		}
+	};
 }

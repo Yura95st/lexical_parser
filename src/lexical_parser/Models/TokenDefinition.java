@@ -1,31 +1,29 @@
-package lexical_parser.TokenDefinitions;
+package lexical_parser.Models;
 
 import java.util.regex.Pattern;
 
 import lexical_parser.Enums.TokenKind;
 
-public class DynamicTokenDefinition implements ITokenDefinition<Pattern>
+public class TokenDefinition
 {
 	private TokenKind kind;
-	
+
 	private Pattern representation;
-	
-	public DynamicTokenDefinition(String representation, TokenKind kind)
+
+	public TokenDefinition(String representation, TokenKind kind)
 	{
 		this.representation = Pattern.compile(representation);
 		this.kind = kind;
 	}
-	
-	@Override
+
 	public TokenKind getKind()
 	{
 		return this.kind;
 	}
-
-	@Override
+	
 	public Pattern getRepresentation()
 	{
 		return this.representation;
 	}
-	
+
 }
