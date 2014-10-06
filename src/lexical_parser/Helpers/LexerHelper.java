@@ -19,7 +19,7 @@ public class LexerHelper
 		"readonly", "ref", "return", "sbyte", "sealed", "short", "sizeof",
 		"stackalloc", "static", "string", "struct", "switch", "this", "throw",
 		"true", "try", "typeof", "uint", "ulong", "unchecked", "unsafe",
-		"ushort", "using", "virtual", "void", "volatile", "while"
+		"ushort", "using", "var", "virtual", "void", "volatile", "while"
 	};
 
 	public static List<TokenDefinition> TokenDefinitionsList = new ArrayList<TokenDefinition>()
