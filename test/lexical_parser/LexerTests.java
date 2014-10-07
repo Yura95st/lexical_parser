@@ -89,22 +89,19 @@ public class LexerTests
 	
 	@Test
 	public void getTokens_InvalidIdentifiers_DividesValueIntoTokens()
-			throws Exception
+
 	{
-		HashMap<String, List<Token>> hashMap = new HashMap<String, List<Token>>()
-				{
+		HashMap<String, List<Token>> hashMap = new HashMap<String, List<Token>>() {
 			{
-				this.put("@identifier", new ArrayList<Token>()
-					{
+				this.put("@identifier", new ArrayList<Token>() {
 					{
 						this.add(new Token("@", TokenKind.Unknown,
 							new Location(0, 1)));
 						this.add(new Token("identifier", TokenKind.Identifier,
 							new Location(1, 10)));
 					}
-					});
-				this.put("0123identifier", new ArrayList<Token>()
-				{
+				});
+				this.put("0123identifier", new ArrayList<Token>() {
 					{
 						this.add(new Token("0123", TokenKind.IntegerLiteral,
 							new Location(0, 4)));
@@ -112,8 +109,7 @@ public class LexerTests
 							new Location(4, 10)));
 					}
 				});
-				this.put("identi-fier", new ArrayList<Token>()
-				{
+				this.put("identi-fier", new ArrayList<Token>() {
 					{
 						this.add(new Token("identi", TokenKind.Identifier,
 							new Location(0, 6)));
@@ -124,94 +120,114 @@ public class LexerTests
 					}
 				});
 			}
-				};
+		};
 		
 		for (Entry<String, List<Token>> entry : hashMap.entrySet())
-				{
-					this.lexer.setSource(entry.getKey());
-					this.lexer.parse();
+		{
+			this.lexer.setSource(entry.getKey());
+			this.lexer.parse();
 			
 			List<Token> tokens = this.lexer.getTokens();
 			
 			Assert.assertEquals(entry.getValue(), tokens);
-				}
+		}
 	}
 	
 	@Test
 	public void getTokens_InvalidIntegerLiterals_DividesValueIntoTokens()
-			throws Exception
+
 	{
-		HashMap<String, List<Token>> hashMap = new HashMap<String, List<Token>>()
-				{
+		HashMap<String, List<Token>> hashMap = new HashMap<String, List<Token>>() {
 			{
-				this.put("0x", new ArrayList<Token>()
-					{
+				this.put("0x", new ArrayList<Token>() {
 					{
 						this.add(new Token("0", TokenKind.IntegerLiteral,
 							new Location(0, 1)));
 						this.add(new Token("x", TokenKind.Identifier,
 							new Location(1, 1)));
 					}
-					});
-				this.put("x123", new ArrayList<Token>()
-					{
+				});
+				this.put("x123", new ArrayList<Token>() {
 					{
 						this.add(new Token("x123", TokenKind.Identifier,
 							new Location(0, 4)));
 					}
-					});
-				this.put("123uu", new ArrayList<Token>()
-					{
+				});
+				this.put("123uu", new ArrayList<Token>() {
 					{
 						this.add(new Token("123u", TokenKind.IntegerLiteral,
 							new Location(0, 4)));
 						this.add(new Token("u", TokenKind.Identifier,
 							new Location(4, 1)));
 					}
-					});
+				});
 			}
-				};
+		};
 		
 		for (Entry<String, List<Token>> entry : hashMap.entrySet())
-				{
-					this.lexer.setSource(entry.getKey());
-					this.lexer.parse();
+		{
+			this.lexer.setSource(entry.getKey());
+			this.lexer.parse();
 			
 			List<Token> expectedTokens = entry.getValue();
 			
 			List<Token> tokens = this.lexer.getTokens();
 
-					Assert.assertEquals(entry.getValue(), tokens);
-				}
+			Assert.assertEquals(entry.getValue(), tokens);
+		}
 	}
+	
+	@Test
+	public void getTokens_InvalidPreprocessingDirectives_DividesValueIntoTokens()
 
+	{
+		HashMap<String, List<Token>> hashMap = new HashMap<String, List<Token>>() {
+			{
+				this.put("#unknown_directive_name", new ArrayList<Token>() {
+					{
+						this.add(new Token("#", TokenKind.Unknown,
+							new Location(0, 1)));
+						this.add(new Token("unknown_directive_name", TokenKind.Identifier,
+							new Location(1, 22)));
+					}
+				});
+			}
+		};
+		
+		for (Entry<String, List<Token>> entry : hashMap.entrySet())
+		{
+			this.lexer.setSource(entry.getKey());
+			this.lexer.parse();
+			
+			List<Token> tokens = this.lexer.getTokens();
+			
+			Assert.assertEquals(entry.getValue(), tokens);
+		}
+	}
+	
 	@Test
 	public void getTokens_InvalidRealLiterals_DividesValueIntoTokens()
-			throws Exception
+
 	{
-		HashMap<String, List<Token>> hashMap = new HashMap<String, List<Token>>()
-				{
+		HashMap<String, List<Token>> hashMap = new HashMap<String, List<Token>>() {
 			{
-				this.put("123.45.67", new ArrayList<Token>()
-					{
+				this.put("123.45.67", new ArrayList<Token>() {
 					{
 						this.add(new Token("123.45", TokenKind.RealLiteral,
 							new Location(0, 6)));
 						this.add(new Token(".67", TokenKind.RealLiteral,
 							new Location(6, 3)));
 					}
-					});
-				this.put("123e", new ArrayList<Token>()
-					{
+				});
+				this.put("123e", new ArrayList<Token>() {
 					{
 						this.add(new Token("123", TokenKind.IntegerLiteral,
 							new Location(0, 3)));
 						this.add(new Token("e", TokenKind.Identifier,
 							new Location(3, 1)));
 					}
-					});
-				this.put(".e+123", new ArrayList<Token>()
-					{
+				});
+				this.put(".e+123", new ArrayList<Token>() {
 					{
 						this.add(new Token(".", TokenKind.Punctuator,
 							new Location(0, 1)));
@@ -222,19 +238,19 @@ public class LexerTests
 						this.add(new Token("123", TokenKind.IntegerLiteral,
 							new Location(3, 3)));
 					}
-					});
+				});
 			}
-				};
+		};
 		
 		for (Entry<String, List<Token>> entry : hashMap.entrySet())
-				{
-					this.lexer.setSource(entry.getKey());
-					this.lexer.parse();
+		{
+			this.lexer.setSource(entry.getKey());
+			this.lexer.parse();
 			
 			List<Token> tokens = this.lexer.getTokens();
 			
 			Assert.assertEquals(entry.getValue(), tokens);
-				}
+		}
 	}
 	
 	@Test
@@ -253,6 +269,56 @@ public class LexerTests
 			
 			Token expectedToken = new Token(operator, TokenKind.Operator,
 				new Location(0, operator.length()));
+			
+			List<Token> tokens = this.lexer.getTokens();
+			
+			Assert.assertEquals(1, tokens.size());
+			
+			Assert.assertEquals(expectedToken, tokens.get(0));
+		}
+	}
+
+	@Test
+	public void getTokens_PreprocessingDirectives()
+	{
+		String[] directives = new String[] {
+			"#define", "#undef", "#if", "#elif", "#else", "#endif", "#line",
+			"#error", "#warning", "#region", "#endregion",
+		};
+		
+		for (String directive : directives)
+		{
+			this.lexer.setSource(directive);
+			this.lexer.parse();
+			
+			Token expectedToken = new Token(directive,
+				TokenKind.PreprocessingDirective, new Location(0,
+					directive.length()));
+			
+			List<Token> tokens = this.lexer.getTokens();
+			
+			Assert.assertEquals(1, tokens.size());
+			
+			Assert.assertEquals(expectedToken, tokens.get(0));
+		}
+	}
+	
+	@Test
+	public void getTokens_PreprocessingDirectivesWithWhiteSpaces()
+	{
+		String[] directives = new String[] {
+			"# define", "# undef", "# if", "# elif", "# else", "# endif",
+			"# line", "# error", "# warning", "# region", "# endregion",
+		};
+		
+		for (String directive : directives)
+		{
+			this.lexer.setSource(directive);
+			this.lexer.parse();
+			
+			Token expectedToken = new Token(directive,
+				TokenKind.PreprocessingDirective, new Location(0,
+					directive.length()));
 			
 			List<Token> tokens = this.lexer.getTokens();
 			

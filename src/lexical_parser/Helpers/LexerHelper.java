@@ -34,6 +34,9 @@ public class LexerHelper
 				"((0[xX][0-9a-fA-F]+)|[0-9]+)(UL|Ul|uL|ul|LU|Lu|lU|lu|U|u|L|l)?",
 				TokenKind.IntegerLiteral));
 			this.add(new TokenDefinition(
+				"#\\s*(define|undef|if|elif|else|endif|line|error|warning|region|endregion)",
+				TokenKind.PreprocessingDirective));
+			this.add(new TokenDefinition(
 				"<<=|>>=|->|\\*=|/=|%=|&=|\\|=|\\^=|\\+\\+|--|&&|\\|\\||<<|>>|==|!=|<=|>=|\\+=|-=|\\+|-|\\*|/|%|&|\\||\\^|!|~|=|<|>|\\?",
 				TokenKind.Operator));
 			this.add(new TokenDefinition("\\{|\\}|\\[|\\]|\\(|\\)|\\.|,|:|;",
