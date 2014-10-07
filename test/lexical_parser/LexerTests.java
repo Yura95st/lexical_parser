@@ -88,6 +88,73 @@ public class LexerTests
 	}
 	
 	@Test
+	public void getTokens_Comments()
+	{
+		String[] comments = new String[] {
+			"/*comment*/", "/* x*y=z */", "/*//line comment inside block comment*/",
+			"/*multi\nline\ncomment*/", "/***another comment*/",
+			"// comment", "///*block comment inside line comment*/",
+			"// comment x/y=z", "//comment and //nested comment",
+			"///another comment"
+		};
+		
+		for (String comment : comments)
+		{
+			this.lexer.setSource(comment);
+			this.lexer.parse();
+			
+			Token expectedToken = new Token(comment, TokenKind.Comment,
+				new Location(0, comment.length()));
+			
+			List<Token> tokens = this.lexer.getTokens();
+			
+			Assert.assertEquals(1, tokens.size());
+			
+			Assert.assertEquals(expectedToken, tokens.get(0));
+		}
+	}
+	
+	@Test
+	public void getTokens_InvalidComments_DividesValueIntoTokens()
+
+	{
+		HashMap<String, List<Token>> hashMap = new HashMap<String, List<Token>>() {
+			{
+				this.put("//multi-line"+System.getProperty("line.separator")+"comment", new ArrayList<Token>() {
+					{
+						this.add(new Token("//multi-line", TokenKind.Comment,
+							new Location(0, 12)));
+						this.add(new Token("comment", TokenKind.Identifier,
+							new Location(13, 7)));
+					}
+				});
+				this.put("/*invalid*/comment*/", new ArrayList<Token>() {
+					{
+						this.add(new Token("/*invalid*/", TokenKind.Comment,
+							new Location(0, 11)));
+						this.add(new Token("comment", TokenKind.Identifier,
+							new Location(11, 7)));
+						this.add(new Token("*", TokenKind.Operator,
+							new Location(18, 1)));
+						this.add(new Token("/", TokenKind.Operator,
+							new Location(19, 1)));
+					}
+				});
+			}
+		};
+		
+		for (Entry<String, List<Token>> entry : hashMap.entrySet())
+		{
+			this.lexer.setSource(entry.getKey());
+			this.lexer.parse();
+			
+			List<Token> tokens = this.lexer.getTokens();
+			
+			Assert.assertEquals(entry.getValue(), tokens);
+		}
+	}
+	
+	@Test
 	public void getTokens_InvalidIdentifiers_DividesValueIntoTokens()
 
 	{

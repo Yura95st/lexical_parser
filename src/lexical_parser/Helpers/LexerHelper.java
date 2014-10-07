@@ -21,7 +21,7 @@ public class LexerHelper
 		"true", "try", "typeof", "uint", "ulong", "unchecked", "unsafe",
 		"ushort", "using", "var", "virtual", "void", "volatile", "while"
 	};
-
+	
 	public static List<TokenDefinition> TokenDefinitionsList = new ArrayList<TokenDefinition>()
 	{
 		{
@@ -36,6 +36,9 @@ public class LexerHelper
 			this.add(new TokenDefinition(
 				"#\\s*(define|undef|if|elif|else|endif|line|error|warning|region|endregion)",
 				TokenKind.PreprocessingDirective));
+			this.add(new TokenDefinition(
+				"(/\\*[^*]*\\*+(?:[^*/][^*]*\\*+)*/)|(//.*)",
+				TokenKind.Comment));
 			this.add(new TokenDefinition(
 				"<<=|>>=|->|\\*=|/=|%=|&=|\\|=|\\^=|\\+\\+|--|&&|\\|\\||<<|>>|==|!=|<=|>=|\\+=|-=|\\+|-|\\*|/|%|&|\\||\\^|!|~|=|<|>|\\?",
 				TokenKind.Operator));
