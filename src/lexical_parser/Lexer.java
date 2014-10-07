@@ -120,7 +120,7 @@ public class Lexer implements ILexer
 			// String tokenValue = matcher.group(0);
 
 			// Identifier can have such form: @keyword
-			if (tokenValue.startsWith("@"))
+			if (tokenKind == TokenKind.Identifier && tokenValue.startsWith("@"))
 			{
 				String keyword = tokenValue.substring(1, tokenValue.length());
 

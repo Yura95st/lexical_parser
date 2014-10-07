@@ -38,6 +38,33 @@ public class LexerTests
 	}
 	
 	@Test
+	public void getTokens_Comments()
+	{
+		String[] comments = new String[] {
+			"/*comment*/", "/* x*y=z */",
+			"/*//line comment within block comment*/",
+			"/*multi\nline\ncomment*/", "/***another comment*/", "// comment",
+			"///*block comment within line comment*/", "// comment x/y=z",
+			"//comment and //nested comment", "///another comment"
+		};
+		
+		for (String comment : comments)
+		{
+			this.lexer.setSource(comment);
+			this.lexer.parse();
+			
+			Token expectedToken = new Token(comment, TokenKind.Comment,
+				new Location(0, comment.length()));
+			
+			List<Token> tokens = this.lexer.getTokens();
+			
+			Assert.assertEquals(1, tokens.size());
+			
+			Assert.assertEquals(expectedToken, tokens.get(0));
+		}
+	}
+
+	@Test
 	public void getTokens_Identifiers()
 	{
 		String[] identifiers = new String[] {
@@ -88,39 +115,12 @@ public class LexerTests
 	}
 	
 	@Test
-	public void getTokens_Comments()
-	{
-		String[] comments = new String[] {
-			"/*comment*/", "/* x*y=z */", "/*//line comment inside block comment*/",
-			"/*multi\nline\ncomment*/", "/***another comment*/",
-			"// comment", "///*block comment inside line comment*/",
-			"// comment x/y=z", "//comment and //nested comment",
-			"///another comment"
-		};
-		
-		for (String comment : comments)
-		{
-			this.lexer.setSource(comment);
-			this.lexer.parse();
-			
-			Token expectedToken = new Token(comment, TokenKind.Comment,
-				new Location(0, comment.length()));
-			
-			List<Token> tokens = this.lexer.getTokens();
-			
-			Assert.assertEquals(1, tokens.size());
-			
-			Assert.assertEquals(expectedToken, tokens.get(0));
-		}
-	}
-	
-	@Test
 	public void getTokens_InvalidComments_DividesValueIntoTokens()
-
 	{
 		HashMap<String, List<Token>> hashMap = new HashMap<String, List<Token>>() {
 			{
-				this.put("//multi-line"+System.getProperty("line.separator")+"comment", new ArrayList<Token>() {
+				this.put("//multi-line" + System.getProperty("line.separator")
+					+ "comment", new ArrayList<Token>() {
 					{
 						this.add(new Token("//multi-line", TokenKind.Comment,
 							new Location(0, 12)));
@@ -254,8 +254,8 @@ public class LexerTests
 					{
 						this.add(new Token("#", TokenKind.Unknown,
 							new Location(0, 1)));
-						this.add(new Token("unknown_directive_name", TokenKind.Identifier,
-							new Location(1, 22)));
+						this.add(new Token("unknown_directive_name",
+							TokenKind.Identifier, new Location(1, 22)));
 					}
 				});
 			}
@@ -321,6 +321,58 @@ public class LexerTests
 	}
 	
 	@Test
+	public void getTokens_InvalidStringLiterals_DividesValueIntoTokens()
+	{
+		HashMap<String, List<Token>> hashMap = new HashMap<String, List<Token>>() {
+			{
+				this.put("\"hello" + System.getProperty("line.separator")
+					+ "world\"", new ArrayList<Token>() {
+					{
+						this.add(new Token("\"", TokenKind.Unknown,
+							new Location(0, 1)));
+						this.add(new Token("hello", TokenKind.Identifier,
+							new Location(1, 5)));
+						this.add(new Token("world", TokenKind.Identifier,
+							new Location(7, 5)));
+						this.add(new Token("\"", TokenKind.Unknown,
+							new Location(12, 1)));
+					}
+				});
+				// String: @"hello" world"
+				this.put("\"hello\" world\"", new ArrayList<Token>() {
+					{
+						this.add(new Token("\"hello\"",
+							TokenKind.StringLiteral, new Location(0, 7)));
+						this.add(new Token("world", TokenKind.Identifier,
+							new Location(8, 5)));
+						this.add(new Token("\"", TokenKind.Unknown,
+							new Location(13, 1)));
+					}
+				});
+				// String: @"hello\""
+				this.put("@\"hello\\\"\"", new ArrayList<Token>() {
+					{
+						this.add(new Token("@\"hello\\\"",
+							TokenKind.StringLiteral, new Location(0, 9)));
+						this.add(new Token("\"", TokenKind.Unknown,
+							new Location(9, 1)));
+					}
+				});
+			}
+		};
+		
+		for (Entry<String, List<Token>> entry : hashMap.entrySet())
+		{
+			this.lexer.setSource(entry.getKey());
+			this.lexer.parse();
+			
+			List<Token> tokens = this.lexer.getTokens();
+			
+			Assert.assertEquals(entry.getValue(), tokens);
+		}
+	}
+	
+	@Test
 	public void getTokens_Operators()
 	{
 		String[] operators = new String[] {
@@ -344,7 +396,7 @@ public class LexerTests
 			Assert.assertEquals(expectedToken, tokens.get(0));
 		}
 	}
-
+	
 	@Test
 	public void getTokens_PreprocessingDirectives()
 	{
@@ -369,7 +421,7 @@ public class LexerTests
 			Assert.assertEquals(expectedToken, tokens.get(0));
 		}
 	}
-	
+
 	@Test
 	public void getTokens_PreprocessingDirectivesWithWhiteSpaces()
 	{
@@ -394,7 +446,7 @@ public class LexerTests
 			Assert.assertEquals(expectedToken, tokens.get(0));
 		}
 	}
-
+	
 	@Test
 	public void getTokens_Punctuators()
 	{
@@ -448,6 +500,34 @@ public class LexerTests
 	public void getTokens_SourceIsNullOrNotParsed_ReturnsEmptyList()
 	{
 		Assert.assertEquals(0, this.lexer.getTokens().size());
+	}
+
+	@Test
+	public void getTokens_StringLiterals()
+	{
+		String[] stringLiterals = new String[] {
+			"\"hello, world\"",
+			"\"hello, \\\"text in escaped quotes\\\" world\"",
+			"@\"hello, \"\"some text\"\" world\"",
+			"@\"one" + System.getProperty("line.separator") + "two"
+				+ System.getProperty("line.separator") + "three\""
+		};
+		
+		for (String stringLiteral : stringLiterals)
+		{
+			this.lexer.setSource(stringLiteral);
+			this.lexer.parse();
+			
+			Token expectedToken = new Token(stringLiteral,
+				TokenKind.StringLiteral,
+				new Location(0, stringLiteral.length()));
+			
+			List<Token> tokens = this.lexer.getTokens();
+			
+			Assert.assertEquals(1, tokens.size());
+			
+			Assert.assertEquals(expectedToken, tokens.get(0));
+		}
 	}
 
 	@Test

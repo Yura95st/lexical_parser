@@ -28,21 +28,23 @@ public class LexerHelper
 			this.add(new TokenDefinition("@?[a-zA-Z_][a-zA-Z0-9_]*",
 				TokenKind.Identifier));
 			this.add(new TokenDefinition(
-				"(([0-9]*\\.[0-9]+)([eE][-+]?[0-9]+)?(F|f|D|d|M|m)?)|([0-9]+(F|f|D|d|M|m){1})",
+				"(([0-9]*\\.[0-9]+)([eE][-+]?[0-9]+)?[FfDdMm]?)|([0-9]+[FfDdMm]{1})",
 				TokenKind.RealLiteral));
 			this.add(new TokenDefinition(
-				"((0[xX][0-9a-fA-F]+)|[0-9]+)(UL|Ul|uL|ul|LU|Lu|lU|lu|U|u|L|l)?",
+				"(?:(?:0[xX][0-9a-fA-F]+)|[0-9]+)(?:UL|Ul|uL|ul|LU|Lu|lU|lu|U|u|L|l)?",
 				TokenKind.IntegerLiteral));
 			this.add(new TokenDefinition(
-				"#\\s*(define|undef|if|elif|else|endif|line|error|warning|region|endregion)",
+				"#\\s*(?:define|undef|if|elif|else|endif|line|error|warning|region|endregion)",
 				TokenKind.PreprocessingDirective));
+			this.add(new TokenDefinition("(?:\"(?:\\\\\"|[^\"\n])*\")|(?:@\"(?:[^\"]|\"\")*\")",
+				TokenKind.StringLiteral));
 			this.add(new TokenDefinition(
-				"(/\\*[^*]*\\*+(?:[^*/][^*]*\\*+)*/)|(//.*)",
+				"(?:/\\*[^*]*\\*+(?:[^*/][^*]*\\*+)*/)|(?://.*)",
 				TokenKind.Comment));
 			this.add(new TokenDefinition(
 				"<<=|>>=|->|\\*=|/=|%=|&=|\\|=|\\^=|\\+\\+|--|&&|\\|\\||<<|>>|==|!=|<=|>=|\\+=|-=|\\+|-|\\*|/|%|&|\\||\\^|!|~|=|<|>|\\?",
 				TokenKind.Operator));
-			this.add(new TokenDefinition("\\{|\\}|\\[|\\]|\\(|\\)|\\.|,|:|;",
+			this.add(new TokenDefinition("[\\Q{}[]().,:;\\E]",
 				TokenKind.Punctuator));
 		}
 	};
