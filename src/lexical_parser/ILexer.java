@@ -12,7 +12,14 @@ public interface ILexer
 	 * @return the keywords
 	 */
 	Iterable<String> getKeywords();
-
+	
+	/**
+	 * Gets the source.
+	 *
+	 * @return the source
+	 */
+	String getSource();
+	
 	/**
 	 * Gets the tokens.
 	 *
@@ -24,7 +31,7 @@ public interface ILexer
 	 * Parses the source.
 	 */
 	void parse();
-	
+
 	/**
 	 * Sets the keywords.
 	 *
@@ -32,7 +39,7 @@ public interface ILexer
 	 *            the new keywords
 	 */
 	void setKeywords(String[] keywords);
-	
+
 	/**
 	 * Sets the source.
 	 *

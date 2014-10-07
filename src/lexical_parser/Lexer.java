@@ -50,6 +50,12 @@ public class Lexer implements ILexer
 	}
 	
 	@Override
+	public String getSource()
+	{
+		return this.source;
+	}
+	
+	@Override
 	public List<Token> getTokens()
 	{
 		return this.tokens;
@@ -78,7 +84,8 @@ public class Lexer implements ILexer
 			
 			if (token == null)
 			{
-				String tokenValue = this.source.substring(this.offset, this.offset + 1);
+				String tokenValue = this.source.substring(this.offset,
+					this.offset + 1);
 				
 				token = new Token(tokenValue, TokenKind.Unknown, new Location(
 					this.offset, tokenValue.length()));
@@ -89,7 +96,7 @@ public class Lexer implements ILexer
 			this.tokens.add(token);
 		}
 	}
-	
+
 	private Token processToken()
 	{
 		for (TokenDefinition definition : LexerHelper.TokenDefinitionsList)
@@ -137,7 +144,7 @@ public class Lexer implements ILexer
 
 		return null;
 	}
-
+	
 	@Override
 	public void setKeywords(String[] keywords)
 	{
@@ -161,7 +168,7 @@ public class Lexer implements ILexer
 		this.tokens.clear();
 		this.offset = 0;
 	}
-	
+
 	private void skipSpaces()
 	{
 		while (this.isInBounds()
