@@ -8,6 +8,7 @@ import lexical_parser.Models.TokenDefinition;
 
 public class LexerHelper
 {
+	/** The Keywords. */
 	public static String[] Keywords = new String[] {
 		"abstract", "as", "base", "bool", "break", "byte", "case", "catch",
 		"char", "checked", "class", "const", "continue", "decimal", "default",
@@ -22,9 +23,12 @@ public class LexerHelper
 		"ushort", "using", "var", "virtual", "void", "volatile", "while"
 	};
 	
-	public static List<TokenDefinition> TokenDefinitionsList = new ArrayList<TokenDefinition>()
+	/**
+	 * The Token definitions list. Based on the C# language specification:
+	 * http://msdn.microsoft.com/en-us/library/aa664668(v=vs.71).aspx
+	 */
+	public static List<TokenDefinition> TokenDefinitionsList = new ArrayList<TokenDefinition>() {
 	{
-		{
 			this.add(new TokenDefinition("@?[a-zA-Z_][a-zA-Z0-9_]*",
 				TokenKind.Identifier));
 			this.add(new TokenDefinition(
@@ -36,8 +40,12 @@ public class LexerHelper
 			this.add(new TokenDefinition(
 				"#\\s*(?:define|undef|if|elif|else|endif|line|error|warning|region|endregion)",
 				TokenKind.PreprocessingDirective));
-			this.add(new TokenDefinition("(?:\"(?:\\\\\"|[^\"\n])*\")|(?:@\"(?:[^\"]|\"\")*\")",
+			this.add(new TokenDefinition(
+				"(?:\"(?:\\\\\"|[^\"\n])*\")|(?:@\"(?:[^\"]|\"\")*\")",
 				TokenKind.StringLiteral));
+			this.add(new TokenDefinition(
+				"(?:\'(?:[^\'\\\\\n]|(?:\\\\[\'\"\\\\0abfnrtuUxv])|(?:\\\\x[0-9a-fA-F]{1,4}))?\')",
+				TokenKind.CharacterLiteral));
 			this.add(new TokenDefinition(
 				"(?:/\\*[^*]*\\*+(?:[^*/][^*]*\\*+)*/)|(?://.*)",
 				TokenKind.Comment));
