@@ -1,0 +1,21 @@
+public class ConsoleApplication
+{
+    public string title;
+
+    static void Main()
+    {
+        Book introToVCS = new Book();
+      
+        introToVCS.title = "Intro to Visual CSharp";
+
+      System.Xml.Serialization.XmlSerializer writer = 
+         new System.Xml.Serialization.XmlSerializer(introToVCS.GetType());
+      
+      System.IO.StreamWriter file =
+         new System.IO.StreamWriter("c:\\IntroToVCS.xml");
+
+      writer.Serialize(file, introToVCS);
+
+      file.Close();
+   }
+}

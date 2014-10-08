@@ -1,0 +1,52 @@
+#textArea
+{
+	-fx-background-color: #FFFFFF;
+	-fx-fill: #000000;
+	-fx-font-family: Consolas;
+	-fx-font-size: 10pt;
+}
+
+.token-default
+{
+	-fx-fill: #000000;
+}
+
+.token-characterLiteral, .token-stringLiteral
+{
+	-fx-fill: #A31515;
+}
+
+.token-comment
+{
+	-fx-fill: #008000;
+}
+
+.token-identifier
+{
+	-fx-fill: #2B91AF;
+}
+
+.token-integerLiteral, .token-realLiteral
+{
+	-fx-fill: #A58EA2;
+}
+
+.token-keyword, .token-preprocessingDirective
+{
+	-fx-fill: #0000FF;
+}
+
+.token-operator
+{
+	-fx-fill: #C54D57;
+}
+
+.token-punctuator
+{
+	-fx-fill: #4ECDC4;
+}
+
+.token-unknown
+{
+	-fx-fill: #FF0000;
+}

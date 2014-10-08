@@ -3,7 +3,6 @@ package lexical_parser;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -20,23 +19,23 @@ import org.junit.Test;
 public class LexerTests
 {
 	private ILexer lexer;
-	
+
 	@Test
 	public void getKeywords_KeywordsAreNotSet_ReturnsEmptyList()
 	{
 		this.lexer = new Lexer();
-		
+
 		Assert.assertFalse(this.lexer.getKeywords().iterator().hasNext());
 	}
-
+	
 	@Test
 	public void getSource_SourceIsNotSet_ReturnsEmptyString()
 	{
 		this.lexer = new Lexer();
-		
+
 		Assert.assertEquals("", this.lexer.getSource());
 	}
-
+	
 	@Test
 	public void getTokens_CharacterLiterals()
 	{
@@ -45,24 +44,24 @@ public class LexerTests
 			"'\\b'", "'\\f'", "'\\n'", "'\\r'", "'\\t'", "'\\u'", "'\\U'",
 			"'\\x'", "'\\v'", "'\\x005C'", "'\\xA'"
 		};
-
+		
 		for (String characterLiteral : characterLiterals)
 		{
 			this.lexer.setSource(characterLiteral);
 			this.lexer.parse();
-
+			
 			Token expectedToken = new Token(characterLiteral,
 				TokenKind.CharacterLiteral, new Location(0,
 					characterLiteral.length()));
-
+			
 			List<Token> tokens = this.lexer.getTokens();
-
+			
 			Assert.assertEquals(1, tokens.size());
-
+			
 			Assert.assertEquals(expectedToken, tokens.get(0));
 		}
 	}
-	
+
 	@Test
 	public void getTokens_Comments()
 	{
@@ -73,46 +72,46 @@ public class LexerTests
 			"///*block comment within line comment*/", "// comment x/y=z",
 			"//comment and //nested comment", "///another comment"
 		};
-
+		
 		for (String comment : comments)
 		{
 			this.lexer.setSource(comment);
 			this.lexer.parse();
-
+			
 			Token expectedToken = new Token(comment, TokenKind.Comment,
 				new Location(0, comment.length()));
-
+			
 			List<Token> tokens = this.lexer.getTokens();
-
+			
 			Assert.assertEquals(1, tokens.size());
-
+			
 			Assert.assertEquals(expectedToken, tokens.get(0));
 		}
 	}
-	
+
 	@Test
 	public void getTokens_Identifiers()
 	{
 		String[] identifiers = new String[] {
 			"identifier1", "_identifier2", "identifier_3", "@if"
 		};
-
+		
 		for (String identifier : identifiers)
 		{
 			this.lexer.setSource(identifier);
 			this.lexer.parse();
-
+			
 			Token expectedToken = new Token(identifier, TokenKind.Identifier,
 				new Location(0, identifier.length()));
-
+			
 			List<Token> tokens = this.lexer.getTokens();
-
+			
 			Assert.assertEquals(1, tokens.size());
-
+			
 			Assert.assertEquals(expectedToken, tokens.get(0));
 		}
 	}
-
+	
 	@Test
 	public void getTokens_IntegerLiterals()
 	{
@@ -123,23 +122,23 @@ public class LexerTests
 			"0x0Au", "0x0AL", "0x0Al", "0x0Aul", "0x0AUL", "0x0AUl", "0x0AuL",
 			"0x0Alu", "0x0ALU", "0x0AlU", "0x0ALu",
 		};
-
+		
 		for (String number : intNumbers)
 		{
 			this.lexer.setSource(number);
 			this.lexer.parse();
-
+			
 			Token expectedToken = new Token(number, TokenKind.IntegerLiteral,
 				new Location(0, number.length()));
-
+			
 			List<Token> tokens = this.lexer.getTokens();
-
+			
 			Assert.assertEquals(1, tokens.size());
-
+			
 			Assert.assertEquals(expectedToken, tokens.get(0));
 		}
 	}
-
+	
 	@Test
 	public void getTokens_InvalidCharacterLiterals_DividesValueIntoTokens()
 	{
@@ -211,18 +210,18 @@ public class LexerTests
 				});
 			}
 		};
-
+		
 		for (Entry<String, List<Token>> entry : hashMap.entrySet())
 		{
 			this.lexer.setSource(entry.getKey());
 			this.lexer.parse();
-
+			
 			List<Token> tokens = this.lexer.getTokens();
-
+			
 			Assert.assertEquals(entry.getValue(), tokens);
 		}
 	}
-
+	
 	@Test
 	public void getTokens_InvalidComments_DividesValueIntoTokens()
 	{
@@ -251,21 +250,21 @@ public class LexerTests
 				});
 			}
 		};
-
+		
 		for (Entry<String, List<Token>> entry : hashMap.entrySet())
 		{
 			this.lexer.setSource(entry.getKey());
 			this.lexer.parse();
-
+			
 			List<Token> tokens = this.lexer.getTokens();
-
+			
 			Assert.assertEquals(entry.getValue(), tokens);
 		}
 	}
-
+	
 	@Test
 	public void getTokens_InvalidIdentifiers_DividesValueIntoTokens()
-	
+
 	{
 		HashMap<String, List<Token>> hashMap = new HashMap<String, List<Token>>() {
 			{
@@ -297,21 +296,21 @@ public class LexerTests
 				});
 			}
 		};
-
+		
 		for (Entry<String, List<Token>> entry : hashMap.entrySet())
 		{
 			this.lexer.setSource(entry.getKey());
 			this.lexer.parse();
-
+			
 			List<Token> tokens = this.lexer.getTokens();
-
+			
 			Assert.assertEquals(entry.getValue(), tokens);
 		}
 	}
-
+	
 	@Test
 	public void getTokens_InvalidIntegerLiterals_DividesValueIntoTokens()
-	
+
 	{
 		HashMap<String, List<Token>> hashMap = new HashMap<String, List<Token>>() {
 			{
@@ -339,23 +338,23 @@ public class LexerTests
 				});
 			}
 		};
-
+		
 		for (Entry<String, List<Token>> entry : hashMap.entrySet())
 		{
 			this.lexer.setSource(entry.getKey());
 			this.lexer.parse();
-
-			List<Token> expectedTokens = entry.getValue();
-
-			List<Token> tokens = this.lexer.getTokens();
 			
+			List<Token> expectedTokens = entry.getValue();
+			
+			List<Token> tokens = this.lexer.getTokens();
+
 			Assert.assertEquals(entry.getValue(), tokens);
 		}
 	}
-
+	
 	@Test
 	public void getTokens_InvalidPreprocessingDirectives_DividesValueIntoTokens()
-	
+
 	{
 		HashMap<String, List<Token>> hashMap = new HashMap<String, List<Token>>() {
 			{
@@ -369,21 +368,21 @@ public class LexerTests
 				});
 			}
 		};
-
+		
 		for (Entry<String, List<Token>> entry : hashMap.entrySet())
 		{
 			this.lexer.setSource(entry.getKey());
 			this.lexer.parse();
-
+			
 			List<Token> tokens = this.lexer.getTokens();
-
+			
 			Assert.assertEquals(entry.getValue(), tokens);
 		}
 	}
-
+	
 	@Test
 	public void getTokens_InvalidRealLiterals_DividesValueIntoTokens()
-	
+
 	{
 		HashMap<String, List<Token>> hashMap = new HashMap<String, List<Token>>() {
 			{
@@ -417,18 +416,18 @@ public class LexerTests
 				});
 			}
 		};
-
+		
 		for (Entry<String, List<Token>> entry : hashMap.entrySet())
 		{
 			this.lexer.setSource(entry.getKey());
 			this.lexer.parse();
-
+			
 			List<Token> tokens = this.lexer.getTokens();
-
+			
 			Assert.assertEquals(entry.getValue(), tokens);
 		}
 	}
-
+	
 	@Test
 	public void getTokens_InvalidStringLiterals_DividesValueIntoTokens()
 	{
@@ -469,18 +468,18 @@ public class LexerTests
 				});
 			}
 		};
-
+		
 		for (Entry<String, List<Token>> entry : hashMap.entrySet())
 		{
 			this.lexer.setSource(entry.getKey());
 			this.lexer.parse();
-
+			
 			List<Token> tokens = this.lexer.getTokens();
-
+			
 			Assert.assertEquals(entry.getValue(), tokens);
 		}
 	}
-	
+
 	@Test
 	public void getTokens_Operators()
 	{
@@ -489,23 +488,23 @@ public class LexerTests
 			"?", "++", "--", "&&", "||", "<<", ">>", "==", "!=", "<=", ">=",
 			"+=", "-=", "*=", "/=", "%=", "&=", "|=", "^=", "<<=", ">>=", "->"
 		};
-
+		
 		for (String operator : operators)
 		{
 			this.lexer.setSource(operator);
 			this.lexer.parse();
-
+			
 			Token expectedToken = new Token(operator, TokenKind.Operator,
 				new Location(0, operator.length()));
-
+			
 			List<Token> tokens = this.lexer.getTokens();
-
+			
 			Assert.assertEquals(1, tokens.size());
-
+			
 			Assert.assertEquals(expectedToken, tokens.get(0));
 		}
 	}
-
+	
 	@Test
 	public void getTokens_PreprocessingDirectives()
 	{
@@ -513,24 +512,24 @@ public class LexerTests
 			"#define", "#undef", "#if", "#elif", "#else", "#endif", "#line",
 			"#error", "#warning", "#region", "#endregion",
 		};
-
+		
 		for (String directive : directives)
 		{
 			this.lexer.setSource(directive);
 			this.lexer.parse();
-
+			
 			Token expectedToken = new Token(directive,
 				TokenKind.PreprocessingDirective, new Location(0,
 					directive.length()));
-
+			
 			List<Token> tokens = this.lexer.getTokens();
-
+			
 			Assert.assertEquals(1, tokens.size());
-
+			
 			Assert.assertEquals(expectedToken, tokens.get(0));
 		}
 	}
-	
+
 	@Test
 	public void getTokens_PreprocessingDirectivesWithWhiteSpaces()
 	{
@@ -538,47 +537,47 @@ public class LexerTests
 			"# define", "# undef", "# if", "# elif", "# else", "# endif",
 			"# line", "# error", "# warning", "# region", "# endregion",
 		};
-
+		
 		for (String directive : directives)
 		{
 			this.lexer.setSource(directive);
 			this.lexer.parse();
-
+			
 			Token expectedToken = new Token(directive,
 				TokenKind.PreprocessingDirective, new Location(0,
 					directive.length()));
-
+			
 			List<Token> tokens = this.lexer.getTokens();
-
+			
 			Assert.assertEquals(1, tokens.size());
-
+			
 			Assert.assertEquals(expectedToken, tokens.get(0));
 		}
 	}
-	
+
 	@Test
 	public void getTokens_Punctuators()
 	{
 		String[] punctuators = new String[] {
 			"{", "}", "[", "]", "(", ")", ".", ",", ":", ";",
 		};
-
+		
 		for (String punctuator : punctuators)
 		{
 			this.lexer.setSource(punctuator);
 			this.lexer.parse();
-
+			
 			Token expectedToken = new Token(punctuator, TokenKind.Punctuator,
 				new Location(0, punctuator.length()));
-
+			
 			List<Token> tokens = this.lexer.getTokens();
-
+			
 			Assert.assertEquals(1, tokens.size());
-
+			
 			Assert.assertEquals(expectedToken, tokens.get(0));
 		}
 	}
-	
+
 	@Test
 	public void getTokens_RealLiterals()
 	{
@@ -588,29 +587,29 @@ public class LexerTests
 			"0123f", "0123F", "0123m", "0123M", "0123.0123d", "0123.0123f",
 			"0123.0123m",
 		};
-
+		
 		for (String number : realNumbers)
 		{
 			this.lexer.setSource(number);
 			this.lexer.parse();
-
+			
 			Token expectedToken = new Token(number, TokenKind.RealLiteral,
 				new Location(0, number.length()));
-
+			
 			List<Token> tokens = this.lexer.getTokens();
-
+			
 			Assert.assertEquals(1, tokens.size());
-
+			
 			Assert.assertEquals(expectedToken, tokens.get(0));
 		}
 	}
-
+	
 	@Test
 	public void getTokens_SourceIsNullOrNotParsed_ReturnsEmptyList()
 	{
 		Assert.assertEquals(0, this.lexer.getTokens().size());
 	}
-
+	
 	@Test
 	public void getTokens_StringLiterals()
 	{
@@ -619,77 +618,74 @@ public class LexerTests
 			"\"hello, \\\"text in escaped quotes\\\" world\"",
 			"@\"hello, \"\"some text\"\" world\"",
 			"@\"one" + System.getProperty("line.separator") + "two"
-					+ System.getProperty("line.separator") + "three\""
+				+ System.getProperty("line.separator") + "three\""
 		};
-
+		
 		for (String stringLiteral : stringLiterals)
 		{
 			this.lexer.setSource(stringLiteral);
 			this.lexer.parse();
-
+			
 			Token expectedToken = new Token(stringLiteral,
 				TokenKind.StringLiteral,
 				new Location(0, stringLiteral.length()));
-
+			
 			List<Token> tokens = this.lexer.getTokens();
-
+			
 			Assert.assertEquals(1, tokens.size());
-
+			
 			Assert.assertEquals(expectedToken, tokens.get(0));
 		}
 	}
-	
+
+	@Test
+	public void parse_SourceIsNotEmpty_ParsesTokensFromSource()
+	{
+		this.lexer.setSource("var x = 5;");
+
+		Assert.assertEquals(0, this.lexer.getTokens().size());
+
+		this.lexer.parse();
+
+		Assert.assertNotEquals(0, this.lexer.getTokens().size());
+	}
+
 	@Test
 	public void setKeywords_KeywordsAreSuccessfullySet()
 	{
 		String[] expectedKeywords = new String[] {
 			"keyword1", "keyword2", "keyword3",
 		};
-		
-		this.lexer.setKeywords(expectedKeywords);
-		
-		Iterator<String> keywords = this.lexer.getKeywords().iterator();
-		
-		for (int i = 0, count = expectedKeywords.length; i < count; i++)
+
+		Set<String> hashSet = new HashSet<String>();
+
+		for (String keyword : expectedKeywords)
 		{
-			String keyword = keywords.next();
-			
-			Assert.assertEquals(expectedKeywords[i], keyword);
+			hashSet.add(keyword);
 		}
-		
-		Assert.assertFalse(keywords.hasNext());
+
+		this.lexer.setKeywords(expectedKeywords);
+
+		Assert.assertEquals(hashSet, this.lexer.getKeywords());
 	}
-	
+
 	@Test
 	public void setKeywords_KeywordsArrayWithDuplicates_RemoveDuplicates()
 	{
 		String[] expectedKeywords = new String[] {
 			"duplicate_keyword", "duplicate_keyword", "duplicate_keyword",
 		};
-		
+
 		Set<String> hashSet = new HashSet<String>();
-		
+
 		for (String keyword : expectedKeywords)
 		{
 			hashSet.add(keyword);
 		}
-		
+
 		this.lexer.setKeywords(expectedKeywords);
-		
-		Iterator<String> keywords = this.lexer.getKeywords().iterator();
-		
-		Iterator<String> iterator = hashSet.iterator();
-		
-		while (iterator.hasNext())
-		{
-			String expectedKeyword = iterator.next();
-			
-			String keyword = keywords.next();
-			
-			Assert.assertEquals(expectedKeyword, keyword);
-		}
-		
-		Assert.assertFalse(keywords.hasNext());
+
+		Assert.assertEquals(hashSet, this.lexer.getKeywords());
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
@@ -703,28 +699,22 @@ public class LexerTests
 	{
 		this.lexer.setSource(null);
 	}
-	
+
 	@Test
 	public void setSource_SourceSuccessfullySet()
 	{
 		String soucre = "var i = 10;";
-		
+
 		this.lexer.setSource(soucre);
-		
+
 		Assert.assertEquals(soucre, this.lexer.getSource());
 	}
-	
+
 	@Before
 	public void setUp() throws Exception
 	{
 		this.lexer = new Lexer();
-		
+
 		this.lexer.setKeywords(LexerHelper.Keywords);
-	}
-	
-	@Test
-	public void testParse()
-	{
-		Assert.fail("Not yet implemented");
 	}
 }
