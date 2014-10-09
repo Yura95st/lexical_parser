@@ -101,8 +101,7 @@ public class Lexer implements ILexer
 	{
 		for (TokenDefinition definition : LexerHelper.TokenDefinitionsList)
 		{
-			String matchString = this.source.substring(this.offset,
-				this.source.length());
+			String matchString = this.source.substring(this.offset);
 			
 			Matcher matcher = definition.getRepresentation().matcher(
 				matchString);
@@ -137,7 +136,7 @@ public class Lexer implements ILexer
 			
 			Token token = new Token(tokenValue, tokenKind, location);
 			
-			this.offset += matcher.end();
+			this.offset += location.getLength();
 			
 			return token;
 		}
