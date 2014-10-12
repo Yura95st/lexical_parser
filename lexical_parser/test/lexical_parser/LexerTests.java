@@ -446,6 +446,21 @@ public class LexerTests
 							new Location(12, 1)));
 					}
 				});
+				// String: "hello \ world"
+				this.put("\"hello \\ world\"", new ArrayList<Token>() {
+					{
+						this.add(new Token("\"",
+							TokenKind.Unknown, new Location(0, 1)));
+						this.add(new Token("hello", TokenKind.Identifier,
+							new Location(1, 5)));
+						this.add(new Token("\\", TokenKind.Unknown,
+							new Location(7, 1)));
+						this.add(new Token("world", TokenKind.Identifier,
+							new Location(9, 5)));
+						this.add(new Token("\"", TokenKind.Unknown,
+							new Location(14, 1)));
+					}
+				});
 				// String: @"hello" world"
 				this.put("\"hello\" world\"", new ArrayList<Token>() {
 					{

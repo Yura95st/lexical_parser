@@ -41,7 +41,7 @@ public class LexerHelper
 				"#\\s*(?:define|undef|if|elif|else|endif|line|error|warning|region|endregion)",
 				TokenKind.PreprocessingDirective));
 			this.add(new TokenDefinition(
-				"(?:\"(?:\\\\\"|[^\"\n])*\")|(?:@\"(?:[^\"]|\"\")*\")",
+				"(?:\"(?:\\\\[\'\"\\\\0abfnrtuUxv]|[^\\\\\"\n])*\")|(?:@\"(?:[^\"]|\"\")*\")",
 				TokenKind.StringLiteral));
 			this.add(new TokenDefinition(
 				"(?:\'(?:[^\'\\\\\n]|(?:\\\\[\'\"\\\\0abfnrtuUxv])|(?:\\\\x[0-9a-fA-F]{1,4}))?\')",
