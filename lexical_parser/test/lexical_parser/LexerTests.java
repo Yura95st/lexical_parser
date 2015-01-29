@@ -225,6 +225,8 @@ public class LexerTests
 	@Test
 	public void getTokens_InvalidComments_DividesValueIntoTokens()
 	{
+		int lineSeparatorLength = System.getProperty("line.separator").length();
+		
 		HashMap<String, List<Token>> hashMap = new HashMap<String, List<Token>>() {
 			{
 				this.put("//multi-line" + System.getProperty("line.separator")
@@ -233,7 +235,7 @@ public class LexerTests
 						this.add(new Token("//multi-line", TokenKind.Comment,
 							new Location(0, 12)));
 						this.add(new Token("comment", TokenKind.Identifier,
-							new Location(13, 7)));
+							new Location(12 + lineSeparatorLength, 7)));
 					}
 				});
 				this.put("/*invalid*/comment*/", new ArrayList<Token>() {
@@ -431,6 +433,8 @@ public class LexerTests
 	@Test
 	public void getTokens_InvalidStringLiterals_DividesValueIntoTokens()
 	{
+		int lineSeparatorLength = System.getProperty("line.separator").length();
+		
 		HashMap<String, List<Token>> hashMap = new HashMap<String, List<Token>>() {
 			{
 				this.put("\"hello" + System.getProperty("line.separator")
@@ -441,9 +445,9 @@ public class LexerTests
 						this.add(new Token("hello", TokenKind.Identifier,
 							new Location(1, 5)));
 						this.add(new Token("world", TokenKind.Identifier,
-							new Location(7, 5)));
+							new Location(6 + lineSeparatorLength, 5)));
 						this.add(new Token("\"", TokenKind.Unknown,
-							new Location(12, 1)));
+							new Location(11 + lineSeparatorLength, 1)));
 					}
 				});
 				// String: "hello \ world"
