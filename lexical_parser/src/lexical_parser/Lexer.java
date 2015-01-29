@@ -1,6 +1,7 @@
 package lexical_parser;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -21,8 +22,7 @@ public class Lexer implements ILexer
 	
 	private String source;
 
-	private List<Character> spaceChars = new ArrayList<Character>()
-	{
+	private List<Character> spaceChars = new ArrayList<Character>() {
 		{
 			this.add(' ');
 			this.add('\n');
@@ -61,11 +61,6 @@ public class Lexer implements ILexer
 		return this.tokens;
 	}
 	
-	private boolean isInBounds()
-	{
-		return this.offset < this.source.length();
-	}
-	
 	@Override
 	public void parse()
 	{
@@ -96,9 +91,40 @@ public class Lexer implements ILexer
 			this.tokens.add(token);
 		}
 	}
+	
+	@Override
+	public void setKeywords(String[] keywords)
+	{
+		Guard.isNotNull(keywords, "keywords");
 
+		this.keywords.clear();
+
+		for (String keyword : keywords)
+		{
+			this.keywords.add(keyword);
+		}
+	}
+
+	@Override
+	public void setSource(String source)
+	{
+		Guard.isNotNull(source, "source");
+
+		this.source = source;
+
+		this.tokens.clear();
+		this.offset = 0;
+	}
+	
+	private boolean isInBounds()
+	{
+		return this.offset < this.source.length();
+	}
+	
 	private Token processToken()
 	{
+		List<Token> foundTokens = new ArrayList<Token>();
+		
 		for (TokenDefinition definition : LexerHelper.TokenDefinitionsList)
 		{
 			String matchString = this.source.substring(this.offset);
@@ -136,36 +162,21 @@ public class Lexer implements ILexer
 			
 			Token token = new Token(tokenValue, tokenKind, location);
 			
-			this.offset += location.getLength();
+			foundTokens.add(token);
+		}
+		
+		if (foundTokens.size() > 0)
+		{
+			Token longestToken = Collections.max(foundTokens,
+				(t1, t2) -> Integer.compare(t1.getLocation().getLength(), t2
+						.getLocation().getLength()));
 			
-			return token;
+			this.offset += longestToken.getLocation().getLength();
+			
+			return longestToken;
 		}
 
 		return null;
-	}
-	
-	@Override
-	public void setKeywords(String[] keywords)
-	{
-		Guard.isNotNull(keywords, "keywords");
-
-		this.keywords.clear();
-
-		for (String keyword : keywords)
-		{
-			this.keywords.add(keyword);
-		}
-	}
-	
-	@Override
-	public void setSource(String source)
-	{
-		Guard.isNotNull(source, "source");
-
-		this.source = source;
-
-		this.tokens.clear();
-		this.offset = 0;
 	}
 
 	private void skipSpaces()
